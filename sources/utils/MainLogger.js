@@ -34,7 +34,7 @@ class MainLogger extends minejs.utils.Logger {
         this.logDefaultPath = path;
 
         /**
-         * @Description
+         * @description
          * The string used as the output primary tag is stored in the variable.
          * 출력시 기본태그로 사용할 문자열이 이 변수에 저장됩니다.
          */
@@ -92,13 +92,27 @@ class MainLogger extends minejs.utils.Logger {
 
         /**
          * @description
-         * The date in the form of [2XXX:: 12 21] is stored in the variable as a string.
-         * [2XXX:12:21] 의 형태로 날짜가 문자열로 이 변수에 저장됩니다.
+         * The date in the form of [2XXX-12-21] is stored in the variable as a string.
+         * [2XXX-12-21] 의 형태로 날짜가 문자열로 이 변수에 저장됩니다.
          */
         let timeFormat = String();
         timeFormat += now.getFullYear();
         timeFormat += '-' + (String(now.getMonth()).length > 1 ? now.getMonth() : '0' + now.getMonth());
         timeFormat += '-' + (String(now.getDate()).length > 1 ? now.getDate() : '0' + now.getDate() + "");
+
+        /**
+         * @description
+         * If the log file name is not given, it creates a file name using the current time.
+         * 로그파일명이 주어지지 않았을 경우, 현재시간을 이용해 파일명을 생성합니다.
+         */
+        if (!logFile) logFile = require('iconv-lite').encode(String(timeFormat + '.log'), 'utf8');
+
+        /**
+         * @description
+         * If the log file path is not given, the log file will use the default path.
+         * 로그파일 경로가 주어지지 않을 경우 기본 로그파일 주소를 이용합니다.
+         */
+        if (!path) path = this.logDefaultPath;
 
         /**
          * @description
@@ -132,20 +146,6 @@ class MainLogger extends minejs.utils.Logger {
             minejs.Server.getServer().getFs().mkdirSync(logPath);
         }
         catch (e) {}
-
-        /**
-         * @description
-         * If the log file name is not given, it creates a file name using the current time.
-         * 로그파일명이 주어지지 않았을 경우, 현재시간을 이용해 파일명을 생성합니다.
-         */
-        if (!logFile) logFile = require('iconv-lite').encode(String(timeFormat + '.log'), 'utf8');
-
-        /**
-         * @description
-         * If the log file path is not given, the log file will use the default path.
-         * 로그파일 경로가 주어지지 않을 경우 기본 로그파일 주소를 이용합니다.
-         */
-        if (!path) path = this.logDefaultPath;
 
         /**
          * @description
